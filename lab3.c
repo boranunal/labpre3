@@ -1,6 +1,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<ctype.h>
+#include<stdbool.h>
 
 #define SIZE 2000
 #define WORDSIZE 20
@@ -17,8 +18,7 @@ void removeSpaces();
 void runLab3();
 char *word;
 
-int main()
-{
+int main(void){
 	word = (char *) malloc(WORDSIZE * sizeof(char));
 	fillText();
 	/*runLab3();*/	/* Uncomment this line when you complete your functions */
@@ -66,19 +66,34 @@ void countWords(int *wordCountP)
 int searchWord(char *searchedWordP, int *startP, int *endP)
 {
 	int i = 0;
+	int k = 0;
+	bool flag = true;
+	while(searchedWordP[k]!='\0'){
+		++k;
+	}
+	int j;
 	while(text[i] != '\n'){
 		if(isalnum(text[i])){
-			for(j = 0; !isspace(text[i+j]); ++j){
-				if(text[i+j]==searchedWordP[j])
+			for(j = 0; j < k; ++j){
+				if(text[i+j] != searchedWordP[j]){
+					flag = false;
+					break;
+				}
+			}
+			if(flag){
+				startP = &i;
+				endP = &(i)+j;
+				return 1;
 			}
 		}
+		i += j;
 	}
-	++i;
+	return 0;
 }
 
 void removeSpaces()
 {
-	/* Your code here */
+
 }
 
 void fillText()
