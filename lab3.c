@@ -21,7 +21,8 @@ char *word;
 int main(void){
 	word = (char *) malloc(WORDSIZE * sizeof(char));
 	fillText();
-	/*runLab3();*/	/* Uncomment this line when you complete your functions */
+
+	runLab3();	/* Uncomment this line when you complete your functions */
 	/*printText();*/
 	return 0;
 }
@@ -49,18 +50,18 @@ void countCharacters(int *charCountP)
 	for(i=0; text[i]!='\n'; ++i){
 		if(!isspace(text[i])) ++count;
 	}
-	charCountP = &count;
+	*charCountP = count;
 }
 
 void countWords(int *wordCountP)
 {
 	int i, count = 0;
-	for(i=0; text[i]!='\n'; ++i){
+	for(i=0; text[i+1]!='\n'; ++i){
 		if(isalnum(text[i]) || ispunct(text[i])) {
 			if(isspace(text[i+1]) || text[i+1] == '\n') ++count;
 		}
 	}
-	wordCountP = &count;
+	*wordCountP = count;
 }
 
 int searchWord(char *searchedWordP, int *startP, int *endP)
@@ -73,7 +74,7 @@ int searchWord(char *searchedWordP, int *startP, int *endP)
 	}
 	int j;
 	while(text[i] != '\n'){
-		if(isalnum(text[i])){
+		if(text[i] != ' '){
 			for(j = 0; j < k; ++j){
 				if(text[i+j] != searchedWordP[j]){
 					flag = false;
@@ -81,19 +82,37 @@ int searchWord(char *searchedWordP, int *startP, int *endP)
 				}
 			}
 			if(flag){
-				startP = &i;
-				endP = &(i)+j;
+				*startP = i+1;
+				*endP = i+j;
 				return 1;
 			}
+			flag = true;
 		}
-		i += j;
+		++i;
 	}
 	return 0;
 }
 
 void removeSpaces()
 {
-
+	char *index;
+	index = text;
+	bool spaceAdded = false;
+	int i, t;
+	for(i = 0, t = 0; index[i] != '\n'; ++i, ++t){
+		if(!spaceAdded && isspace(index[i])){
+			text[t] = index[i];
+			spaceAdded = true;
+		}
+		else if(spaceAdded && isspace(index[i])){
+			for( ; isspace(index[i]); ++i) ;
+			spaceAdded = false;
+		}
+		else{
+			text[t] = index[i];
+		}
+	}
+	text[t] = '\n';
 }
 
 void fillText()
@@ -101,7 +120,7 @@ void fillText()
 	int i;
 	helper = (char *) malloc(SIZE * sizeof(char));
 
-	helper = "My         message is that we'll be watching you. This is all wrong. I shouldn't be up here. I should be back in school on the other side of the ocean. Yet you all come to us young people for hope. How dare you! You have stolen my dreams           and my childhood with your empty words. And yet I'm one of the lucky ones. People are suffering. People are dying. Entire ecosystems are         collapsing. \n";
+	helper ="My         message is that we'll be watching you. This is all wrong. I shouldn't be up here. I should be back in school on the other side of the ocean. Yet you all come to us young people for hope. How dare you! You have stolen my dreams           and my childhood with your empty words. And yet I'm one of the lucky ones. People are suffering. People are dying. Entire ecosystems are         collapsing. \n";
 
 	for(i=0; ; i++)
 	{
