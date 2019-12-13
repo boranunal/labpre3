@@ -21,9 +21,7 @@ char *word;
 int main(void){
 	word = (char *) malloc(WORDSIZE * sizeof(char));
 	fillText();
-
 	runLab3();	/* Uncomment this line when you complete your functions */
-	/*printText();*/
 	return 0;
 }
 
@@ -56,7 +54,7 @@ void countCharacters(int *charCountP)
 void countWords(int *wordCountP)
 {
 	int i, count = 0;
-	for(i=0; text[i+1]!='\n'; ++i){
+	for(i=0; text[i]!='\n'; ++i){
 		if(isalnum(text[i]) || ispunct(text[i])) {
 			if(isspace(text[i+1]) || text[i+1] == '\n') ++count;
 		}
@@ -97,22 +95,22 @@ void removeSpaces()
 {
 	char *index;
 	index = text;
-	bool spaceAdded = false;
 	int i, t;
 	for(i = 0, t = 0; index[i] != '\n'; ++i, ++t){
-		if(!spaceAdded && isspace(index[i])){
-			text[t] = index[i];
-			spaceAdded = true;
-		}
-		else if(spaceAdded && isspace(index[i])){
+		if(i == 0)
 			for( ; isspace(index[i]); ++i) ;
-			spaceAdded = false;
-		}
-		else{
+		if(isspace(index[i])){
+			text[t] = index[i];
+			++i;
+			if(index[i] == '\n') break;
+			for( ; isspace(index[i]); ++i) 	if(index[i] == '\n') break;
+			++t;
+			text[t] = index[i];
+ 			}
+		else
 			text[t] = index[i];
 		}
-	}
-	text[t] = '\n';
+		text[t] = '\n';
 }
 
 void fillText()
